@@ -1,0 +1,102 @@
+/* AirCon Page Custom Styles */
+
+body {
+    font-family: 'Pretendard', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f8fafc;
+    transition: background-color 0.5s;
+}
+
+/* On 상태일 때 배경색 변경 */
+body.on-bg {
+    background-color: #ecfeff;
+}
+
+.card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+    width: 300px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+}
+
+.status-off {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.status-on {
+    background: #dcfce7;
+    color: #22c55e;
+}
+
+.fan-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    position: relative;
+}
+
+.fan {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    color: #64748b;
+}
+
+.fan.spinning {
+    animation: spin 2s linear infinite;
+    color: #06b6d4; /* 켜졌을 때 아이콘 색상 변경 */
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.btn-toggle {
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    background: #0f172a;
+    color: white;
+}
+
+.btn-toggle:active {
+    transform: scale(0.98);
+}
+
+.btn-toggle:hover {
+    background: #1e293b;
+}
+
+.link-home {
+    margin-top: 2rem;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.link-home:hover {
+    text-decoration: underline;
+}

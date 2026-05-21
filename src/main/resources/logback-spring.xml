@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- 기동·프레임워크: MDC 없이 읽기 쉬운 한 줄 -->
+	<property name="CONSOLE_SIMPLE_PATTERN"
+			  value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %5p %logger{36} : %m%n%ex"/>
+	<!-- HTTP 요청 처리 코드(web·api): MDC 자리는 비어 있으면 '_' (Logback %X{key:-default}) -->
+	<property name="CONSOLE_MDC_PATTERN"
+			  value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %5p [%X{requestId:-_}] [%logger{36}] [%X{controller:-_}] [%X{requestMethod:-_}] [%X{requestUri:-_}] --- %m%n%ex"/>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>utf8</charset>
+			<pattern>${CONSOLE_SIMPLE_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="CONSOLE_MDC" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>utf8</charset>
+			<pattern>${CONSOLE_MDC_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="ai.app.boot.controller.ui" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE_MDC"/>
+	</logger>
+
+	<logger name="ai.app.boot.controller.api" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE_MDC"/>
+	</logger>
+
+	<logger name="ai.app.boot.global.logging" level="INFO" additivity="false">
+		<appender-ref ref="CONSOLE_MDC"/>
+	</logger>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE"/>
+	</root>
+</configuration>

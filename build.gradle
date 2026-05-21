@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'ai.app'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring RestClient·RestTemplate 등 HTTP 클라이언트용 스타터
+	implementation 'org.springframework.boot:spring-boot-starter-restclient'
+	// Spring MVC 기반 웹 애플리케이션(컨트롤러, JSON 등)용 스타터
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	// 서버 사이드 HTML 템플릿(기본 경로: classpath:/templates/)
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	// WebSocket: 양방향 실시간 통신을 위한 스타터
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	// Swagger (OpenAPI) UI
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+	// Lombok: 컴파일 시점에 getter/setter/builder 등 보일러플레이트 생성(런타임 JAR 미포함)
+	compileOnly 'org.projectlombok:lombok'
+	// 개발 전용: 클래스패스 변경 시 자동 재시작 등 로컬 개발 편의
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	// @ConfigurationProperties 등 설정 메타데이터 생성으로 IDE 자동완성·검증 지원
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	// Lombok 어노테이션(@Getter 등) 처리용 APT
+	annotationProcessor 'org.projectlombok:lombok'
+	// RestClient 관련 테스트(MockRestServiceServer 등) 지원
+	testImplementation 'org.springframework.boot:spring-boot-starter-restclient-test'
+	// MockMvc·@WebMvcTest 등 Spring MVC 단위·슬라이스 테스트 지원
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	// Gradle에서 JUnit Platform 테스트 실행 시 필요한 런처(테스트 런타임만)
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

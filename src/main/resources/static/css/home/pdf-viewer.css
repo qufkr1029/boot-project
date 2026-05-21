@@ -1,0 +1,134 @@
+/* PDF Card Specific Sizing */
+.pdf-card {
+    max-width: 56rem !important; /* Overriding 44rem to give PDF viewer more space */
+}
+
+/* Back Link Nav */
+.back-nav {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.back-link:hover {
+    color: var(--primary-color);
+    transform: translateX(-3px);
+}
+
+.back-icon {
+    font-size: 1.1rem;
+}
+
+/* Info Banner */
+.info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 1rem;
+    padding: 1.2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(8px);
+}
+
+.info-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.info-text code {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-color);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+}
+
+
+
+/* Tech Spec Card */
+.tech-spec {
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+}
+
+.tech-spec h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+}
+
+.tech-spec p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.tech-spec ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.tech-spec li {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #4b5563;
+    position: relative;
+    padding-left: 1.25rem;
+}
+
+.tech-spec li::before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: bold;
+    position: absolute;
+    left: 0.4rem;
+    top: 0;
+}
+
+/* PDF Viewer Containers */
+.viewer-container {
+    width: 100%;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+    position: relative;
+}
+
+.viewer-container iframe {
+    display: block;
+    border: none;
+}
+
