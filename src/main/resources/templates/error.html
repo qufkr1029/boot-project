@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title th:text="${status} + ' - 에러 발생'"></title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet" />
+	<style>
+		:root {
+			--bg: #f8fafc;
+			--card: #ffffff;
+			--text-main: #1e293b;
+			--text-sub: #64748b;
+			--primary: #4f46e5;
+			--primary-hover: #4338ca;
+			--danger: #ef4444;
+		}
+
+		body {
+			font-family: 'Outfit', 'Pretendard', system-ui, sans-serif;
+			background: var(--bg);
+			color: var(--text-main);
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			line-height: 1.6;
+		}
+
+		.error-card {
+			background: var(--card);
+			padding: 3rem 2rem;
+			border-radius: 1.5rem;
+			box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+			text-align: center;
+			max-width: 28rem;
+			width: 100%;
+			margin: 1.5rem;
+		}
+
+		.error-badge {
+			display: inline-block;
+			background: #e0e7ff;
+			color: var(--primary);
+			padding: 0.35rem 1rem;
+			border-radius: 2rem;
+			font-weight: 800;
+			font-size: 0.875rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			margin-bottom: 1.5rem;
+		}
+
+		.error-badge.status-404 {
+			background: #fee2e2;
+			color: var(--danger);
+		}
+
+		.error-title {
+			font-size: 2.25rem;
+			font-weight: 800;
+			margin: 0 0 1rem;
+			letter-spacing: -0.025em;
+		}
+
+		.error-desc {
+			color: var(--text-sub);
+			font-size: 1rem;
+			margin-bottom: 2rem;
+		}
+
+		.error-details {
+			background: #f1f5f9;
+			padding: 1rem;
+			border-radius: 0.75rem;
+			text-align: left;
+			font-size: 0.875rem;
+			margin-bottom: 2rem;
+			border: 1px solid #e2e8f0;
+		}
+
+		.detail-item {
+			margin-bottom: 0.5rem;
+		}
+		.detail-item:last-child {
+			margin-bottom: 0;
+		}
+
+		.detail-label {
+			font-weight: 600;
+			color: var(--text-main);
+			margin-right: 0.5rem;
+		}
+
+		.detail-value {
+			font-family: 'JetBrains Mono', monospace;
+			color: #334155;
+			word-break: break-all;
+		}
+
+		.link-home {
+			display: inline-block;
+			background: var(--primary);
+			color: white;
+			text-decoration: none;
+			padding: 0.75rem 1.5rem;
+			border-radius: 0.75rem;
+			font-weight: 600;
+			transition: background 0.2s, transform 0.2s;
+			box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+		}
+
+		.link-home:hover {
+			background: var(--primary-hover);
+			transform: translateY(-1px);
+		}
+
+		.link-home:active {
+			transform: translateY(0);
+		}
+	</style>
+</head>
+<body>
+	<main class="error-card">
+		<header>
+			<div th:class="'error-badge ' + (${status == 404} ? 'status-404' : '')" th:text="${status}">500</div>
+			<h1 class="error-title" th:if="${status == 404}">페이지 분실</h1>
+			<h1 class="error-title" th:unless="${status == 404}">오류 발생</h1>
+		</header>
+
+		<p class="error-desc" th:if="${status == 404}">
+			요청하신 페이지가 존재하지 않거나, 잘못된 경로로 접근하셨습니다.
+		</p>
+		<p class="error-desc" th:unless="${status == 404}">
+			요청을 처리하는 도중 서버 내부 에러가 발생했습니다.
+		</p>
+
+		<section class="error-details">
+			<div class="detail-item">
+				<span class="detail-label">경로:</span>
+				<span class="detail-value" th:text="${path}">-</span>
+			</div>
+			<div class="detail-item" th:if="${error}">
+				<span class="detail-label">유형:</span>
+				<span class="detail-value" th:text="${error}">-</span>
+			</div>
+		</section>
+
+		<nav>
+			<a th:href="@{/}" class="link-home">홈으로 돌아가기</a>
+		</nav>
+	</main>
+</body>
+</html>

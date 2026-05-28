@@ -30,6 +30,7 @@ public class HomeUiController {
 		model.addAttribute("appTitle", "Introduction");
 		model.addAttribute("requestTime", FORMAT.format(OffsetDateTime.now()));
 		model.addAttribute("initialState", airConService.getCurrentState().isOn());
+		model.addAttribute("serverTime", System.currentTimeMillis());
 		return "home/intro";
 	}
 

@@ -22,18 +22,17 @@ public class RequestHandlerLoggingInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		if (handler instanceof HandlerMethod hm) {
 			MDC.put(RequestLoggingFilter.MDC_CONTROLLER, hm.getBeanType().getSimpleName());
+			log.info("요청 처리 시작");
 		}
-		else if (handler != null) {
-			MDC.put(RequestLoggingFilter.MDC_CONTROLLER, handler.getClass().getSimpleName());
-		}
-		log.info("요청 처리 시작");
 		return true;
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
-		log.info("요청 처리 완료 status={}", response.getStatus());
-		MDC.remove(RequestLoggingFilter.MDC_CONTROLLER);
+		if (handler instanceof HandlerMethod) {
+			log.info("요청 처리 완료 status={}", response.getStatus());
+			MDC.remove(RequestLoggingFilter.MDC_CONTROLLER);
+		}
 	}
 }

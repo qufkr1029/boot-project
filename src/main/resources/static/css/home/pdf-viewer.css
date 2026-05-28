@@ -1,4 +1,4 @@
-/* PDF Viewer Page Body Override */
+/* PDF 뷰어 페이지 바디 오버라이드 */
 body {
     flex-direction: column;
     height: auto;
@@ -6,13 +6,13 @@ body {
     justify-content: flex-start;
 }
 
-/* PDF Card Specific Sizing */
+/* PDF 카드 전용 사이즈 조절 */
 .pdf-card {
-    max-width: 56rem !important; /* Overriding 44rem to give PDF viewer more space */
+    max-width: 56rem !important; /* PDF 뷰어에 더 넓은 공간을 주기 위해 44rem을 오버라이딩 */
     margin-bottom: 2rem;
 }
 
-/* Info Banner */
+/* 안내 배너 */
 .info-banner {
     display: flex;
     align-items: flex-start;
@@ -46,7 +46,7 @@ body {
     word-break: break-all;
 }
 
-/* Tech Spec Card */
+/* 기술 스펙 카드 */
 .tech-spec {
     background: rgba(255, 255, 255, 0.45);
     border: 1px solid rgba(0, 0, 0, 0.04);
@@ -96,7 +96,7 @@ body {
     top: 0;
 }
 
-/* PDF Viewer Containers */
+/* PDF 뷰어 컨테이너 */
 .viewer-container {
     width: 100%;
     border-radius: 1.25rem;
@@ -112,7 +112,7 @@ body {
     border: none;
 }
 
-/* Responsive Logic */
+/* 반응형 로직 */
 .responsive-viewer {
     display: block;
 }
@@ -134,7 +134,7 @@ body {
     }
 }
 
-/* Download Card Styling */
+/* 다운로드 카드 스타일링 */
 .download-card {
     background: rgba(255, 255, 255, 0.45);
     border: 1px solid rgba(255, 255, 255, 0.6);
@@ -189,7 +189,7 @@ body {
     font-size: 1.2rem;
 }
 
-/* Actions & Home Link (Standardized) */
+/* 하단 액션 및 홈 링크 (공통화) */
 .actions {
     margin-top: 1rem;
     margin-bottom: 3rem;

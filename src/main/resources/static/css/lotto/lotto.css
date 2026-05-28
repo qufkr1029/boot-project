@@ -185,7 +185,7 @@ h1 {
     text-decoration: underline;
 }
 
-/* Toast Notification */
+/* 토스트 알림 */
 .toast {
     position: fixed;
     top: 2rem;
@@ -194,7 +194,7 @@ h1 {
     background: rgba(30, 41, 59, 0.9);
     color: white;
     padding: 0.75rem 1.5rem;
-    border-radius: 2rem;
+    border-radius: 1rem;
     font-size: 0.875rem;
     font-weight: 500;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -202,6 +202,7 @@ h1 {
     opacity: 0;
     pointer-events: none;
     z-index: 1000;
+    white-space: pre-line;
 }
 
 .toast.show {
@@ -209,7 +210,7 @@ h1 {
     opacity: 1;
 }
 
-/* Ball Colors */
+/* 볼 색상 정의 */
 .b-1 { background: var(--ball-1); }
 .b-11 { background: var(--ball-11); }
 .b-21 { background: var(--ball-21); }

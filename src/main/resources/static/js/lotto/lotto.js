@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnClient = document.getElementById('btn-client');
     const btnCopyAll = document.getElementById('btn-copy-all');
 
-    // Create Toast Element
+    // 토스트 엘리먼트 생성
     const toast = document.createElement('div');
     toast.className = 'toast';
     document.body.appendChild(toast);
@@ -32,18 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
             </li>`).join('');
     };
 
-    // Render initial games from server if available
+    // 서버에서 받아온 초기 번호가 있으면 렌더링
     if (window.initialGames && window.initialGames.length > 0) {
         renderGames(window.initialGames, false);
     }
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {
-            showToast('복사되었습니다: ' + text);
+            showToast('복사되었습니다\r\n' + text);
         });
     };
 
-    // Event Delegation for Copy Buttons
+    // 복사 버튼에 대한 이벤트 위임
     gameList.addEventListener('click', (e) => {
         const btn = e.target.closest('.copy-btn');
         if (btn) {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const games = Array.from(gameList.querySelectorAll('.copy-btn'))
             .map(btn => btn.dataset.game);
         if (games.length > 0) {
-            copyToClipboard(games.join('\n'));
+            copyToClipboard(games.join('\r\n'));
         } else {
             showToast('복사할 번호가 없습니다.');
         }

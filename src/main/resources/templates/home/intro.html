@@ -13,12 +13,23 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		window.initialState = /*[[${initialState}]]*/ false;
+		window.serverTime = /*[[${serverTime}]]*/ Date.now();
 		/*]]>*/
 	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 	<script th:src="@{/js/home/intro.js}" defer></script>
 </head>
 <body>
-	<canvas id="bg-canvas"></canvas>
+	<canvas id="bg-canvas-2d" class="bg-canvas"></canvas>
+	<canvas id="bg-canvas-3d" class="bg-canvas"></canvas>
+
+	<div class="bg-selector-panel">
+		<span class="bg-label">배경 효과</span>
+		<select id="bg-effect-select" class="bg-select">
+			<option value="2d">2D 라인 네트워크</option>
+			<option value="3d">3D 코스믹 소용돌이 은하</option>
+		</select>
+	</div>
 	
 
 	<main class="glass-card">
@@ -26,8 +37,8 @@
 			<h1 class="title-gradient" th:text="${appTitle}">Introduction</h1>
 			<p class="subtitle">Spring Boot 공부방입니다.</p>
 			<div class="time-badge">
-				<span class="time-label">요청 시간</span>
-				<span class="time-value" th:text="${requestTime}">-</span>
+				<span class="time-label">현재 시간</span>
+				<span id="current-time" class="time-value">-</span>
 			</div>
 		</header>
 
