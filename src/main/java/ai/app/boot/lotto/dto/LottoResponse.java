@@ -7,4 +7,4 @@ import java.util.List;
  */
 public record LottoResponse(
     List<List<Integer>> games
-) { }
+) {}

@@ -247,5 +247,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initParticles();
     animate();
+    
+    // Initialize aircon UI status with server value
+    if (typeof window.initialState !== 'undefined') {
+        updateAirconUI(window.initialState);
+    }
+    
     connectAirconSocket();
 });

@@ -9,53 +9,55 @@
 	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
 	<link rel="stylesheet" th:href="@{/css/home/intro.css}" />
 	<link rel="stylesheet" th:href="@{/css/home/pdf-viewer.css}" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-	<script th:src="@{/js/home/intro.js}" defer></script>
 </head>
 <body>
-	<canvas id="bg-canvas"></canvas>
-
 	<main class="glass-card pdf-card">
 		<header class="header-section">
-			<div class="back-nav">
-				<a th:href="@{/}" class="back-link">
-					<span class="back-icon">←</span> 인트로 홈으로
-				</a>
-			</div>
 			<h1 class="title-gradient">PDF 뷰어</h1>
-			<p class="subtitle">HTML5 표준 태그 <code>&lt;iframe&gt;</code>를 활용한 PDF 렌더링 입니다.</p>
+			<p class="subtitle">해상도에 따라 최적화된 PDF 보기 방식을 제공합니다. (1280x720 이상: 뷰어 / 이하: 다운로드)</p>
 		</header>
 
 		<!-- 안내 배너 -->
 		<div class="info-banner">
 			<span class="info-icon">💡</span>
 			<div class="info-text">
-				준비하신 PDF 파일은 <code>src/main/resources/static/pdf/sample.pdf</code> 경로에 업로드하시면 아래 뷰어 화면에 자동으로 렌더링됩니다.
+				준비하신 PDF 파일은 <code>src/main/resources/static/pdf/sample.pdf</code> 경로에 업로드하시면 아래 화면에 자동으로 반영됩니다.
 			</div>
 		</div>
 
-
-
 		<div class="viewer-wrapper">
-			<div id="viewer-iframe">
+			<!-- 데스크톱용 뷰어 (1280x720 이상) -->
+			<div id="viewer-iframe" class="responsive-viewer">
 				<div class="tech-spec">
-					<h4>🌐 <code>&lt;iframe&gt;</code> 태그 분석</h4>
-					<p>웹 문서 내에 또 다른 HTML 문서를 내장할 때 사용하는 표준 태그입니다. PDF 출력 시 가장 널리 사용됩니다.</p>
-					<ul>
-						<li><strong>장점:</strong> 사용이 단순하며 모던 브라우저 대부분에서 내장 리더 툴바와 함께 정상 작동합니다.</li>
-						<li><strong>단점:</strong> 모바일 환경이나 구형 브라우저에서 인라인 표시 대신 다운로드 창이 뜨거나 빈 화면이 나타날 수 있습니다.</li>
-					</ul>
+					<h4>🌐 <code>&lt;iframe&gt;</code> 기반 뷰어</h4>
+					<p>고해상도 환경에서는 브라우저 내장 PDF 리더를 통해 즉시 확인이 가능합니다.</p>
 				</div>
 				<div class="viewer-container">
-					<iframe th:src="@{/pdf/sample.pdf}" width="100%" height="600px" frameborder="0">
-						이 브라우저는 iframe을 통한 PDF 출력을 지원하지 않습니다.
+					<iframe th:src="@{/pdf/sample.pdf#toolbar=1&navpanes=0&scrollbar=1}"
+						width="100%"
+						height="700px"
+						frameborder="0">
 					</iframe>
+				</div>
+			</div>
+
+			<!-- 모바일/저해상도용 다운로드 버튼 (1280x720 미만) -->
+			<div id="viewer-download" class="responsive-download">
+				<div class="download-card">
+					<div class="download-icon">📄</div>
+					<h3>PDF 파일을 확인하세요</h3>
+					<p>현재 해상도에서는 직접 보기보다 다운로드하여 확인하는 것을 권장합니다.</p>
+					<a th:href="@{/pdf/sample.pdf}" class="btn-download" download>
+						<span class="icon">↓</span> PDF 다운로드
+					</a>
 				</div>
 			</div>
 		</div>
 	</main>
 
-
+	<!-- 홈으로 이동 버튼 (카드 외부로 이동) -->
+	<nav class="actions">
+		<a th:href="@{/}" class="link-home">홈으로 돌아가기</a>
+	</nav>
 </body>
 </html>

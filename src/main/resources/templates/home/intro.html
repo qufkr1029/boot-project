@@ -10,6 +10,11 @@
 	<link rel="stylesheet" th:href="@{/css/home/intro.css}" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		window.initialState = /*[[${initialState}]]*/ false;
+		/*]]>*/
+	</script>
 	<script th:src="@{/js/home/intro.js}" defer></script>
 </head>
 <body>
@@ -61,13 +66,13 @@
 					<a th:href="@{/aircon}" class="nav-item">
 						<span class="icon">❄️</span>
 						<span class="label">실시간 에어컨 제어</span>
-						<span class="desc">WebSocket 원격 제어</span>
+						<span class="desc">WebSocket</span>
 					</a>
 				</li>
 				<li>
 					<a th:href="@{/aircon}" class="nav-item">
 						<span class="icon">
-							<svg id="intro-fan-icon" th:class="'fan ' + (${initialState} ? 'spinning' : '')" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<svg id="intro-fan-icon" class="fan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 								<circle cx="12" cy="12" r="3"></circle>
 								<path d="M12 9c0-3.5 3-6 3-6s3 2.5 3 6c0 1.5-1 2.5-3 3"></path>
 								<path d="M15 12c3.5 0 6 3 6 3s-2.5 3-6 3c-1.5 0-2.5-1-3-3"></path>
@@ -76,7 +81,7 @@
 							</svg>
 						</span>
 						<span class="label">에어컨 작동 상태</span>
-						<span id="aircon-status-badge" th:class="'status-badge-mini ' + (${initialState} ? 'status-on' : 'status-off')" th:text="${initialState} ? '작동 중' : '정지됨'">
+						<span id="aircon-status-badge" class="status-badge-mini status-off">
 							상태 확인 중...
 						</span>
 					</a>
@@ -85,7 +90,7 @@
 					<a th:href="@{/pdf-viewer}" class="nav-item">
 						<span class="icon">📄</span>
 						<span class="label">PDF 뷰어 테스트</span>
-						<span class="desc">iframe/object/embed</span>
+						<span class="desc">iframe</span>
 					</a>
 				</li>
 			</ul>

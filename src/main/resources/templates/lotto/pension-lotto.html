@@ -5,43 +5,36 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>연금복권 720+ 예상 번호</title>
 	<link rel="stylesheet" th:href="@{/css/lotto/pension-lotto.css}" />
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		window.initialGames = /*[[${games}]]*/ [];
+		/*]]>*/
+	</script>
 	<script th:src="@{/js/lotto/pension-lotto.js}" defer></script>
 </head>
 <body>
-	<div class="header">
+	<header class="header">
 		<h1>🎫 연금복권 720+ 예상 번호</h1>
 		<p style="color: #92400e; font-size: 0.9rem;">매달 안정적인 행운을 꿈꿔보세요!</p>
-	</div>
+	</header>
 
-	<div class="copy-all-container">
-		<button id="btn-copy-all" class="btn-copy-all" title="전체 복사">
-			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-			전체 복사
-		</button>
-	</div>
-
-	<div id="game-list" class="game-container">
-		<div th:each="game, stat : ${games}" class="game-card">
-			<div class="game-info">
-				<div class="game-label" th:text="${stat.count} + '번째 게임 (서버)'"></div>
-				<div class="digits">
-					<div class="digit group-digit" th:text="${game.substring(0, 1)}"></div>
-					<div class="separator">조</div>
-					<div th:each="i : ${#numbers.sequence(3, 8)}" class="digit" th:text="${game.substring(i, i+1)}"></div>
-				</div>
-			</div>
-			<button class="copy-btn" th:data-game="${game}" title="복사하기">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+	<main>
+		<div class="copy-all-container">
+			<button id="btn-copy-all" class="btn-copy-all" title="전체 복사">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+				전체 복사
 			</button>
 		</div>
-	</div>
 
-	<div class="actions">
-		<div class="btn-group">
-			<button id="btn-server" class="btn-generate btn-server">서버에서 번호 받기</button>
-			<button id="btn-client" class="btn-generate">브라우저에서 생성</button>
-		</div>
-		<a th:href="@{/}" class="link-home">홈으로 돌아가기</a>
-	</div>
+		<ol id="game-list" class="game-container" aria-label="연금복권 예상 번호 목록"></ol>
+
+		<section class="actions">
+			<div class="btn-group">
+				<button id="btn-server" class="btn-generate btn-server">서버에서 번호 받기</button>
+				<button id="btn-client" class="btn-generate">브라우저에서 생성</button>
+			</div>
+			<a th:href="@{/}" class="link-home">홈으로 돌아가기</a>
+		</section>
+	</main>
 </body>
 </html>

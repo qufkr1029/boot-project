@@ -37,5 +37,8 @@ elements.btn.onclick = () => {
     }
 };
 
-// 초기 연결
+// 초기 상태 반영 및 연결
+if (typeof window.initialState !== 'undefined') {
+    updateUI(window.initialState);
+}
 connect();

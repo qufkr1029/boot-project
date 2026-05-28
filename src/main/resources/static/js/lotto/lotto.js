@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderGames = (games, isLocal) => {
         gameList.innerHTML = games.map((nums, i) => `
-            <div class="game-card">
+            <li class="game-card">
                 <div class="game-info">
                     <div class="game-label">${i+1}번째 게임 ${isLocal ? '(로컬)' : '(서버)'}</div>
                     <div class="balls">${nums.map(n => `<div class="ball ${getBallClass(n)}">${n}</div>`).join('')}</div>
@@ -29,8 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button class="copy-btn" data-game="[${nums.join(', ')}]" title="복사하기">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
-            </div>`).join('');
+            </li>`).join('');
     };
+
+    // Render initial games from server if available
+    if (window.initialGames && window.initialGames.length > 0) {
+        renderGames(window.initialGames, false);
+    }
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text).then(() => {

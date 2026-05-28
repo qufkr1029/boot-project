@@ -7,5 +7,5 @@ import java.util.List;
  */
 public record PensionLottoResponse(
     List<String> games
-) { }
+) {}
 
