@@ -13,7 +13,7 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		window.initialState = /*[[${initialState}]]*/ false;
-		window.serverTime = /*[[${serverTime}]]*/ Date.now();
+		window.serverTime = /*[[${serverTime}]]*/ 0;
 		/*]]>*/
 	</script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -27,7 +27,7 @@
 		<span class="bg-label">배경 효과</span>
 		<select id="bg-effect-select" class="bg-select">
 			<option value="2d">2D 라인 네트워크</option>
-			<option value="3d">3D 코스믹 소용돌이 은하</option>
+			<option value="3d">3D 별자리 입체 네트워크</option>
 		</select>
 	</div>
 	
@@ -35,7 +35,7 @@
 	<main class="glass-card">
 		<header class="header-section">
 			<h1 class="title-gradient" th:text="${appTitle}">Introduction</h1>
-			<p class="subtitle">Spring Boot 공부방입니다.</p>
+			<p class="subtitle">웹 서비스 세계에 오신것을 환영합니다.</p>
 			<div class="time-badge">
 				<span class="time-label">현재 시간</span>
 				<span id="current-time" class="time-value">-</span>

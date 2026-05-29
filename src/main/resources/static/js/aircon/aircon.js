@@ -9,7 +9,7 @@ const elements = {
 function connect() {
     const socket = new SockJS('/ws-aircon');
     stompClient = Stomp.over(socket);
-    stompClient.debug = null; 
+    stompClient.debug = () => {}; 
 
     stompClient.connect({}, (frame) => {
         stompClient.subscribe('/topic/aircon/state', (response) => {

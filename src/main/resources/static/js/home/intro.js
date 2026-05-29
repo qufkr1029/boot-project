@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         resize() {
-            if (!this.canvas) return;
+            if (!this.canvas || !this.ctx) return;
             const dpr = window.devicePixelRatio || 1;
             this.width = window.innerWidth;
             this.height = window.innerHeight;
@@ -216,141 +216,146 @@ document.addEventListener('DOMContentLoaded', () => {
         camera: null,
         particles: null,
         geometry: null,
+        lines: null,            // 별자리 연결선 객체
+        lineGeometry: null,     // 별자리 연결선 지오메트리
         animationId: null,
         active: false,
-        numParticles: 8000, // 파티클 수를 8,000개로 늘려 밀도 향상
-        particleData: [],   // 개별 파티클 메타데이터
+        numNodes: 175,          // 선으로 연결될 핵심 별자리 노드 수 (50% 수준인 175로 조정)
+        numBgStars: 900,        // 배경을 채울 미세 별 파티클 수 (50% 수준인 900으로 조정)
+        nodeData: [],           // 핵심 노드 물리 정보
+        bgStarData: [],         // 배경 별 물리 정보
 
         init() {
             if (!this.canvas) return;
             const width = window.innerWidth;
             const height = window.innerHeight;
 
-            // 1) 씬 생성
+            // 1) 씬 생성 및 화사한 은하수 안개 설정 (실버 파스텔 안개)
             this.scene = new THREE.Scene();
-            // 우주 깊이감을 표현하기 위해 EXP2 안개 효과 추가
-            this.scene.fog = new THREE.FogExp2(0x060610, 0.008);
+            this.scene.fog = new THREE.FogExp2(0xf1f5f9, 0.005);
 
-            // 2) 카메라 설정 (원거리 우주 파노라마 시각)
+            // 2) 카메라 설정 (별자리 네트워크 한가운데를 비스듬히 감상하는 시각)
             this.camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
-            this.camera.position.set(0, 45, 90);
+            this.camera.position.set(0, 30, 95);
             this.camera.lookAt(0, 0, 0);
 
-            // 3) 버퍼 지오메트리 정보 및 메타데이터 정의
+            // 3) 노드용 위치/색상 배열 및 배경용 별 위치/색상 배열
+            const totalParticles = this.numNodes + this.numBgStars;
             this.geometry = new THREE.BufferGeometry();
-            const positions = new Float32Array(this.numParticles * 3);
-            const colors = new Float32Array(this.numParticles * 3);
-            this.particleData = [];
+            const positions = new Float32Array(totalParticles * 3);
+            const colors = new Float32Array(totalParticles * 3);
+            this.nodeData = [];
+            this.bgStarData = [];
 
-            // 화려한 네온 컬러 팔레트 정의
-            const colorCore = new THREE.Color('#fffae6');   // 중심핵: 초고온 골드/화이트
-            const colorPink = new THREE.Color('#ff007f');   // 안쪽 나선: 핫 핑크
-            const colorPurple = new THREE.Color('#7b2cbf'); // 중간 나선: 네온 바이올렛
-            const colorCyan = new THREE.Color('#00f0ff');   // 외곽 나선: 일렉트릭 시안
-            const colorIndigo = new THREE.Color('#10143a'); // 우주 먼지: 딥 인디고
+            // 화사한 라이트 오로라 컬러 정의
+            const colorPurple = new THREE.Color('#8b5cf6'); // 바이올렛 별자리
+            const colorPink   = new THREE.Color('#ff5e7e'); // 코랄 핑크 별자리
+            const colorCyan   = new THREE.Color('#00b4d8'); // 터코이즈 블루 별자리
+            const colorTeal   = new THREE.Color('#10b981'); // 민트 그린 별자리
+            const colorGold   = new THREE.Color('#ffb703'); // 골든 반짝이
+            const colorWhite  = new THREE.Color('#e2e8f0'); // 연백색 배경별
 
-            for (let i = 0; i < this.numParticles; i++) {
+            // A. 별자리 핵심 노드 생성 (350개) - 움직이고 선으로 연결됨
+            for (let i = 0; i < this.numNodes; i++) {
                 const idx = i * 3;
-                
-                // 70%는 정교한 4선 나선 은하, 30%는 주변의 구형 성운(Nebula Dust)
-                const isGalaxy = i < this.numParticles * 0.70;
+                // 공간 영역: X: -75 ~ 75, Y: -50 ~ 50, Z: -75 ~ 75
+                const x = (Math.random() - 0.5) * 150;
+                const y = (Math.random() - 0.5) * 100;
+                const z = (Math.random() - 0.5) * 150;
 
-                if (isGalaxy) {
-                    // 4방향 나선 은하 팔(Spiral Arms) 인덱스 분배
-                    const armIndex = i % 4;
-                    // 중심부에 밀집되도록 지수 함수형 랜덤 반경 분배
-                    const radius = Math.pow(Math.random(), 2.0) * 58;
-                    // 은하 회전각 + 노이즈 분산
-                    const angle = (armIndex * 2 * Math.PI / 4) + (radius * 0.065) + (Math.random() - 0.5) * 0.38;
-                    // 중심부는 둥글고 가장자리로 갈수록 얇게 납작해지는 은하 원반 Y 두께 설정
-                    const y = (Math.random() - 0.5) * 6.5 * (1 - radius / 58);
+                positions[idx] = x;
+                positions[idx + 1] = y;
+                positions[idx + 2] = z;
 
-                    const x = Math.cos(angle) * radius;
-                    const z = Math.sin(angle) * radius;
+                this.nodeData.push({
+                    x: x, y: y, z: z,
+                    vx: (Math.random() - 0.5) * 0.16, // 부드럽고 느린 유영 속도
+                    vy: (Math.random() - 0.5) * 0.16,
+                    vz: (Math.random() - 0.5) * 0.16,
+                    pulsePhase: Math.random() * Math.PI * 2
+                });
 
-                    positions[idx] = x;
-                    positions[idx + 1] = y;
-                    positions[idx + 2] = z;
+                // 무작위로 화사한 색상 분배
+                const randColor = Math.random();
+                let c;
+                if (randColor < 0.25) c = colorPurple;
+                else if (randColor < 0.5) c = colorPink;
+                else if (randColor < 0.75) c = colorCyan;
+                else c = colorTeal;
 
-                    this.particleData.push({
-                        type: 'galaxy',
-                        radius: radius,
-                        angle: angle,
-                        baseY: y,
-                        yPhase: Math.random() * Math.PI * 2,
-                        speed: (0.007 + (1 - radius / 58) * 0.024), // 중심부 공전 속도 가속화
-                        pulsePhase: Math.random() * Math.PI * 2,
-                        pulseSpeed: 0.8 + Math.random() * 1.5
-                    });
+                colors[idx] = c.r;
+                colors[idx + 1] = c.g;
+                colors[idx + 2] = c.b;
+            }
 
-                    // 거리별 화려한 그라데이션 블렌딩
-                    let c;
-                    if (radius < 8) {
-                        c = new THREE.Color().lerpColors(colorCore, colorPink, radius / 8);
-                    } else if (radius < 26) {
-                        c = new THREE.Color().lerpColors(colorPink, colorPurple, (radius - 8) / 18);
-                    } else {
-                        c = new THREE.Color().lerpColors(colorPurple, colorCyan, (radius - 26) / 32);
-                    }
+            // B. 배경 미세 별 생성 (1,800개) - 기하학 공간의 깊이 레이어 역할
+            for (let i = 0; i < this.numBgStars; i++) {
+                const idx = (this.numNodes + i) * 3;
+                // 배경 별은 구형 성단 형태로 둥글고 넓게 분배
+                const radius = 65 + Math.random() * 85;
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
 
-                    colors[idx] = c.r;
-                    colors[idx + 1] = c.g;
-                    colors[idx + 2] = c.b;
-                } else {
-                    // 외곽을 구형으로 감싸며 신비로움을 더하는 우주 성운/먼지 입자
-                    const radius = 32 + Math.random() * 48;
-                    const u = Math.random();
-                    const v = Math.random();
-                    const theta = u * 2.0 * Math.PI;
-                    const phi = Math.acos(2.0 * v - 1.0);
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta) * 0.6; // 위아래로 약간 납작하게
+                const z = radius * Math.cos(phi);
 
-                    // 타원체 형태로 우주 가스 분포
-                    const x = radius * Math.sin(phi) * Math.cos(theta);
-                    const y = radius * Math.sin(phi) * Math.sin(theta) * 0.5;
-                    const z = radius * Math.cos(phi);
+                positions[idx] = x;
+                positions[idx + 1] = y;
+                positions[idx + 2] = z;
 
-                    positions[idx] = x;
-                    positions[idx + 1] = y;
-                    positions[idx + 2] = z;
+                this.bgStarData.push({
+                    x: x, y: y, z: z,
+                    speed: (Math.random() * 0.0015 - 0.0007),
+                    theta: theta,
+                    radius: radius,
+                    phi: phi
+                });
 
-                    this.particleData.push({
-                        type: 'nebula',
-                        radius: radius,
-                        angle: theta,
-                        baseY: y,
-                        yPhase: Math.random() * Math.PI * 2,
-                        speed: (Math.random() * 0.004 - 0.002), // 미세한 공전/역공전 속도
-                        pulsePhase: Math.random() * Math.PI * 2,
-                        pulseSpeed: 0.5 + Math.random() * 1.0
-                    });
-
-                    // 청록색과 딥 블루가 조화를 이루는 컬러
-                    const c = new THREE.Color().lerpColors(colorCyan, colorIndigo, Math.random() * 0.85);
-                    colors[idx] = c.r;
-                    colors[idx + 1] = c.g;
-                    colors[idx + 2] = c.b;
-                }
+                const c = Math.random() > 0.45 ? colorWhite : colorGold;
+                colors[idx] = c.r * 0.70; // 밝기를 은은하게 낮추어 먼 배경으로 표현
+                colors[idx + 1] = c.g * 0.70;
+                colors[idx + 2] = c.b * 0.70;
             }
 
             this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-            // 4) 고급스러운 멀티-글로우 원형 입자 텍스처 생성
+            // 4) 원형 입자 텍스처
             const texture = this.createCircleTexture();
 
-            // 5) 포인트 재질 구성
+            // 5) 포인트 재질
             const material = new THREE.PointsMaterial({
-                size: 1.15, // 입자 크기를 살짝 키워 화려함 강조
+                size: 1.25,
                 vertexColors: true,
                 map: texture,
                 transparent: true,
                 depthWrite: false,
-                blending: THREE.AdditiveBlending
+                blending: THREE.NormalBlending
             });
 
-            // 6) 파티클 시스템 생성 및 추가
             this.particles = new THREE.Points(this.geometry, material);
             this.scene.add(this.particles);
+
+            // 6) 연결선 지오메트리 및 재질 생성 (LineSegments 사용으로 GPU 렌더링 최적화)
+            this.lineGeometry = new THREE.BufferGeometry();
+            const maxConnections = this.numNodes * 7; 
+            const linePositions = new Float32Array(maxConnections * 2 * 3);
+            const lineColors = new Float32Array(maxConnections * 2 * 3);
+            this.lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
+            this.lineGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
+
+            const lineMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.38,
+                blending: THREE.NormalBlending
+            });
+
+            this.lines = new THREE.LineSegments(this.lineGeometry, lineMaterial);
+            this.scene.add(this.lines);
 
             // 7) WebGL 렌더러 초기화
             this.renderer = new THREE.WebGLRenderer({
@@ -367,14 +372,11 @@ document.addEventListener('DOMContentLoaded', () => {
             canvas.width = 32;
             canvas.height = 32;
             const ctx = canvas.getContext('2d');
-            
-            // 중심은 눈부신 화이트, 외곽은 신비로운 핑크/네온 오라가 감도는 그라데이션
             const grad = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-            grad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');     // 하이라이트 코어
-            grad.addColorStop(0.15, 'rgba(255, 220, 255, 0.9)');  // 핑크 감쇠막
-            grad.addColorStop(0.45, 'rgba(100, 180, 255, 0.45)'); // 소프트 블루 글로우
-            grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');           // 완전 투명 경계
-            
+            grad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');     
+            grad.addColorStop(0.2, 'rgba(255, 240, 255, 0.95)');  
+            grad.addColorStop(0.55, 'rgba(180, 225, 255, 0.5)');  
+            grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');           
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 32, 32);
             return new THREE.CanvasTexture(canvas);
@@ -411,72 +413,183 @@ document.addEventListener('DOMContentLoaded', () => {
             bg3D.animationId = requestAnimationFrame(bg3D.animate);
 
             if (isTabActive) {
-                const time = Date.now() * 0.0014;
+                const time = Date.now() * 0.001;
                 const positions = bg3D.geometry.attributes.position.array;
+                const colors = bg3D.geometry.attributes.color.array;
 
-                for (let i = 0; i < bg3D.numParticles; i++) {
+                let mouse3DX = 0;
+                let mouse3DY = 0;
+                let mouse3DZ = 0;
+                let hasMouse = false;
+
+                if (mouse.active && mouse.x !== null) {
+                    const normX = (mouse.x / window.innerWidth) * 2 - 1;
+                    const normY = -(mouse.y / window.innerHeight) * 2 + 1;
+                    mouse3DX = normX * 85;
+                    mouse3DY = normY * 45;
+                    mouse3DZ = 0;
+                    hasMouse = true;
+                }
+
+                // 1. 핵심 성좌 노드 물리 연동 (부유 + 경계 바운스 + 마우스 중력 인력)
+                for (let i = 0; i < bg3D.numNodes; i++) {
                     const idx = i * 3;
-                    const data = bg3D.particleData[i];
+                    const data = bg3D.nodeData[i];
 
-                    // 1. 기본 회전 및 은하 공전 연산
-                    data.angle += data.speed * 0.22;
+                    // 기본 유영 움직임
+                    data.x += data.vx;
+                    data.y += data.vy;
+                    data.z += data.vz;
 
-                    let currentAngle = data.angle;
-                    // 파티클 호흡(Breathing) 효과: 전체가 부드럽게 팽창/수축을 반복하며 살아 숨쉬는 성운 연출
-                    let currentRadius = data.radius + Math.sin(time * data.pulseSpeed + data.pulsePhase) * 0.35;
-                    // Y축 출렁임
-                    let currentY = data.baseY + Math.sin(time * 1.8 + data.yPhase) * 1.6;
-
-                    // 2. 마우스 상호작용 (중력 및 소용돌이 기류 추가)
-                    if (mouse.active && mouse.x !== null) {
-                        const normX = (mouse.x / window.innerWidth) * 2 - 1;
-                        const normY = -(mouse.y / window.innerHeight) * 2 + 1;
-
-                        // 3D 공간 상의 마우스 가상 좌표 추정
-                        const mouse3DX = normX * 62;
-                        const mouse3DZ = -normY * 62;
-
-                        const tempX = Math.cos(currentAngle) * currentRadius;
-                        const tempZ = Math.sin(currentAngle) * currentRadius;
-
-                        const dx = tempX - mouse3DX;
-                        const dz = tempZ - mouse3DZ;
-                        const dist = Math.sqrt(dx * dx + dz * dz);
-
-                        // 마우스 근처 28단위 범위 내 파티클 변형
-                        if (dist < 28) {
-                            const force = (28 - dist) / 28;
-                            
-                            // A) 회전 소용돌이(Vortex Swirl) 추가: 마우스 중심 주변으로 강렬하게 휘감김
-                            currentAngle += force * 0.20;
-                            // B) 인력 끌림 효과: 은하가 마우스 주변으로 왜곡되어 쏠림
-                            currentRadius -= force * 3.8;
-                            // C) Y축 파동 왜곡: 입체감이 살아나는 수직 왜곡
-                            currentY += Math.sin(time * 5.0 + data.yPhase) * force * 5.5;
+                    // 마우스 인력 (마우스 방향으로 부드럽게 끌려감)
+                    if (hasMouse) {
+                        const dx = mouse3DX - data.x;
+                        const dy = mouse3DY - data.y;
+                        const dz = mouse3DZ - data.z;
+                        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+                        
+                        if (dist < 45) {
+                            const pullForce = (45 - dist) / 45 * 0.04;
+                            data.x += (dx / dist) * pullForce * 4.2;
+                            data.y += (dy / dist) * pullForce * 4.2;
+                            data.z += (dz / dist) * pullForce * 4.2;
                         }
                     }
 
-                    // 최종 연산 값 버퍼 좌표계 반영
-                    positions[idx] = Math.cos(currentAngle) * currentRadius;
-                    positions[idx + 1] = currentY;
-                    positions[idx + 2] = Math.sin(currentAngle) * currentRadius;
+                    // 공간 경계 이탈 방지 (X: 75, Y: 50, Z: 75)
+                    if (Math.abs(data.x) > 75) data.vx *= -1;
+                    if (Math.abs(data.y) > 50) data.vy *= -1;
+                    if (Math.abs(data.z) > 75) data.vz *= -1;
+
+                    positions[idx] = data.x;
+                    positions[idx + 1] = data.y;
+                    positions[idx + 2] = data.z;
+                }
+
+                // 2. 배경용 은하수 별 공전 연산
+                for (let i = 0; i < bg3D.numBgStars; i++) {
+                    const idx = (bg3D.numNodes + i) * 3;
+                    const data = bg3D.bgStarData[i];
+
+                    data.theta += data.speed * 0.18; // 부드럽고 느리게 회전
+                    
+                    const x = data.radius * Math.sin(data.phi) * Math.cos(data.theta);
+                    const y = data.radius * Math.sin(data.phi) * Math.sin(data.theta) * 0.6;
+                    const z = data.radius * Math.cos(data.phi);
+
+                    positions[idx] = x;
+                    positions[idx + 1] = y;
+                    positions[idx + 2] = z;
                 }
 
                 bg3D.geometry.attributes.position.needsUpdate = true;
 
-                // 3. 다이내믹 카메라 경로 비행 (공전과 상하 요동, 마우스 패럴랙스 결합)
-                const camAngle = time * 0.04;
-                const baseCamX = Math.sin(camAngle) * 88;
-                const baseCamZ = Math.cos(camAngle) * 88;
-                // 시간에 따라 3D 높낮이가 오르내리며 은하의 입체 구조가 드러남
-                const baseCamY = 32 + Math.sin(time * 0.10) * 16;
+                // 3. 별자리 네트워크 동적 연결선 연산 (LineSegments 갱신)
+                const linePos = bg3D.lineGeometry.attributes.position.array;
+                const lineCol = bg3D.lineGeometry.attributes.color.array;
+                let lineIdx = 0;
+                const maxLinesCount = bg3D.numNodes * 7;
+                const limitDistance = 25.0; // 성좌 선 연결 임계거리
 
-                // 마우스 패럴랙스: 마우스 무브에 따라 카메라 각도 추가 편향
+                // 임계거리 이내의 성좌 노드 쌍 탐색 후 버퍼 채우기
+                for (let i = 0; i < bg3D.numNodes; i++) {
+                    const nodeA = bg3D.nodeData[i];
+                    const idxA = i * 3;
+
+                    for (let j = i + 1; j < bg3D.numNodes; j++) {
+                        if (lineIdx >= maxLinesCount) break;
+
+                        const nodeB = bg3D.nodeData[j];
+                        const idxB = j * 3;
+
+                        const dx = nodeA.x - nodeB.x;
+                        const dy = nodeA.y - nodeB.y;
+                        const dz = nodeA.z - nodeB.z;
+                        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+                        if (dist < limitDistance) {
+                            const alpha = (limitDistance - dist) / limitDistance;
+
+                            // 선의 시작점 (노드 A)
+                            linePos[lineIdx * 6] = nodeA.x;
+                            linePos[lineIdx * 6 + 1] = nodeA.y;
+                            linePos[lineIdx * 6 + 2] = nodeA.z;
+
+                            // 선의 끝점 (노드 B)
+                            linePos[lineIdx * 6 + 3] = nodeB.x;
+                            linePos[lineIdx * 6 + 4] = nodeB.y;
+                            linePos[lineIdx * 6 + 5] = nodeB.z;
+
+                            // 연결선 알파 감쇄 및 입자 고유 색상 매핑
+                            lineCol[lineIdx * 6] = colors[idxA] * alpha;
+                            lineCol[lineIdx * 6 + 1] = colors[idxA + 1] * alpha;
+                            lineCol[lineIdx * 6 + 2] = colors[idxA + 2] * alpha;
+
+                            lineCol[lineIdx * 6 + 3] = colors[idxB] * alpha;
+                            lineCol[lineIdx * 6 + 4] = colors[idxB + 1] * alpha;
+                            lineCol[lineIdx * 6 + 5] = colors[idxB + 2] * alpha;
+
+                            lineIdx++;
+                        }
+                    }
+
+                    // 마우스와 노드 사이의 인터랙티브 유도 연결선 추가
+                    if (hasMouse && lineIdx < maxLinesCount) {
+                        const dx = nodeA.x - mouse3DX;
+                        const dy = nodeA.y - mouse3DY;
+                        const dz = nodeA.z - mouse3DZ;
+                        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+                        if (dist < 32.0) {
+                            const alpha = (32.0 - dist) / 32.0 * 0.75; // 마우스선은 더 선명하게
+
+                            linePos[lineIdx * 6] = nodeA.x;
+                            linePos[lineIdx * 6 + 1] = nodeA.y;
+                            linePos[lineIdx * 6 + 2] = nodeA.z;
+
+                            linePos[lineIdx * 6 + 3] = mouse3DX;
+                            linePos[lineIdx * 6 + 4] = mouse3DY;
+                            linePos[lineIdx * 6 + 5] = mouse3DZ;
+
+                            // 마우스 포인터 방향으로 번져나가는 빛선
+                            lineCol[lineIdx * 6] = colors[idxA] * alpha;
+                            lineCol[lineIdx * 6 + 1] = colors[idxA + 1] * alpha;
+                            lineCol[lineIdx * 6 + 2] = colors[idxA + 2] * alpha;
+
+                            lineCol[lineIdx * 6 + 3] = 0.5 * alpha; // 마우스 중심부는 중립 광택
+                            lineCol[lineIdx * 6 + 4] = 0.7 * alpha;
+                            lineCol[lineIdx * 6 + 5] = 1.0 * alpha;
+
+                            lineIdx++;
+                        }
+                    }
+                }
+
+                // 남은 버퍼는 렌더링되지 않도록 0으로 완전 초기화
+                for (let i = lineIdx; i < maxLinesCount; i++) {
+                    linePos[i * 6] = 0;
+                    linePos[i * 6 + 1] = 0;
+                    linePos[i * 6 + 2] = 0;
+                    linePos[i * 6 + 3] = 0;
+                    linePos[i * 6 + 4] = 0;
+                    linePos[i * 6 + 5] = 0;
+                }
+
+                bg3D.lineGeometry.attributes.position.needsUpdate = true;
+                bg3D.lineGeometry.attributes.color.needsUpdate = true;
+
+                // 4. 카메라 무브먼트: 별자리 성좌 사이를 서서히 공전 비행하듯 360도 웅장한 이동 회전
+                const camAngle = time * 0.024;
+                const baseCamX = Math.sin(camAngle) * 98;
+                const baseCamZ = Math.cos(camAngle) * 98;
+                const baseCamY = 22 + Math.sin(time * 0.06) * 12;
+
+                // 마우스 움직임에 반응하는 강한 3D 패럴랙스
                 let parallaxX = 0;
                 let parallaxY = 0;
-                if (mouse.active && mouse.x !== null) {
-                    parallaxX = (mouse.x / window.innerWidth - 0.5) * 18;
-                    parallaxY = -(mouse.y / window.innerHeight - 0.5) * 12;
+                if (hasMouse) {
+                    parallaxX = (mouse.x / window.innerWidth - 0.5) * 26;
+                    parallaxY = -(mouse.y / window.innerHeight - 0.5) * 18;
                 }
 
                 bg3D.camera.position.x = baseCamX + parallaxX;
@@ -501,7 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const socket = new SockJS('/ws-aircon');
         const stompClient = Stomp.over(socket);
-        stompClient.debug = null; // STOMP 프레임 디버깅 로그 출력 숨김
+        stompClient.debug = () => {}; // STOMP 디버깅 로그 비활성화 (함수로 정의하여 TypeError 방지)
 
         stompClient.connect({}, () => {
             stompClient.subscribe('/topic/aircon/state', (response) => {
