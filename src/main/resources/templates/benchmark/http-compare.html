@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${appTitle}">HTTP/1.1 vs HTTP/2 Comparison</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" th:href="@{/css/home/intro.css}" />
+	<link rel="stylesheet" th:href="@{/css/benchmark/http-compare.css}" />
+	<script th:src="@{/js/benchmark/http-compare.js}" defer></script>
+</head>
+<body>
+
+<div class="container">
+	<main class="glass-card">
+		<header class="header-section">
+			<h1 class="title-gradient">HTTP/1.1 vs HTTP/2 Comparison</h1>
+			<p class="subtitle">부하 옵션을 직접 조절하여 두 프로토콜 간 전송 효율성의 격차를 비교해 보세요.</p>
+		</header>
+
+		<!-- 프로토콜 빠른 전환 스위치 (UI/UX 개선) -->
+		<section class="protocol-switcher-section">
+			<span class="switcher-title">프로토콜/포트 모드 선택</span>
+			<div class="segmented-control">
+				<button id="switch-http1" class="switch-btn">
+					<span class="switch-icon">🌐</span>
+					<span class="switch-label">HTTP/1.1 (8888 포트)</span>
+				</button>
+				<button id="switch-http2" class="switch-btn">
+					<span class="switch-icon">⚡</span>
+					<span class="switch-label">HTTP/2 (8443 포트)</span>
+				</button>
+			</div>
+		</section>
+
+		<!-- 부하 설정 패널 -->
+		<section class="config-panel">
+			<div class="config-item">
+				<label class="config-label" for="image-count-select">요청할 이미지(파일) 개수</label>
+				<select id="image-count-select" class="config-select">
+					<option value="100">100 개 (가벼운 부하)</option>
+					<option value="300" selected>300 개 (보통 부하)</option>
+					<option value="500">500 개 (무거운 부하)</option>
+				</select>
+			</div>
+			<div class="config-item">
+				<label class="config-label" for="latency-select">서버 인위적 응답 지연(Latency)</label>
+				<select id="latency-select" class="config-select">
+					<option value="0">0 ms (지연 없음)</option>
+					<option value="50">50 ms (빠름)</option>
+					<option value="200" selected>200 ms (중간 지연)</option>
+					<option value="500">500 ms (심한 지연)</option>
+				</select>
+			</div>
+		</section>
+
+		<!-- 대시보드 HUD -->
+		<section class="hud-grid">
+			<div class="hud-item">
+				<span class="hud-label">현재 프로토콜</span>
+				<span id="current-protocol" class="hud-value protocol">감지 중...</span>
+			</div>
+			<div class="hud-item">
+				<span class="hud-label">로딩된 파일 개수</span>
+				<span id="loaded-count" class="hud-value">0 / 300</span>
+			</div>
+			<div class="hud-item">
+				<span class="hud-label">총 소요 시간</span>
+				<span id="elapsed-time" class="hud-value">0 ms</span>
+			</div>
+		</section>
+
+		<!-- 이미지 바둑판 격자 -->
+		<section class="grid-wrapper">
+			<div id="image-grid" class="image-grid">
+				<!-- JS를 사용해 타일 동적 생성 -->
+			</div>
+		</section>
+
+		<!-- 제어 구역 -->
+		<section class="action-section">
+			<button id="start-btn" class="btn btn-primary">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+				부하 테스트 시작
+			</button>
+			<button id="reset-btn" class="btn btn-secondary">초기화</button>
+		</section>
+
+		<!-- 텍스트 전송 암호화 테스트 폼 (UI/UX 개선) -->
+		<section class="text-test-panel">
+			<div class="text-test-title">🔒 HTTPS 데이터 전송 암호화 테스트</div>
+			<div class="text-test-form">
+				<div class="input-group">
+					<label for="test-text-input" class="input-label">text :</label>
+					<input type="text" id="test-text-input" class="text-input" placeholder="보낼 내용을 입력하세요..." value="Hello HTTPS!" />
+				</div>
+				<button id="send-text-btn" class="btn btn-secondary send-btn">보내기</button>
+			</div>
+			<div class="text-test-result">
+				<span>서버 수신 응답 결과: </span>
+				<strong id="test-text-result" class="result-value">-</strong>
+			</div>
+		</section>
+
+		<!-- 안내 및 팁 -->
+		<footer class="info-card">
+			<div class="info-title">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+				💡 격차가 왜 생기나요?
+			</div>
+			<p>
+				<strong>HTTP/1.1 (8888 포트)</strong>는 파일 300개를 가져올 때 한 번에 6개씩밖에 계산하지 못합니다. 지연이 200ms라면 총 소요 시간은 약 10초(300 / 6 * 0.2초) 가까이 누적되며 극심한 렉이 발생합니다.
+			</p>
+			<p>
+				반면 <strong>HTTP/2 (8443 포트)</strong>는 300개의 파일을 1개의 통로로 동시에 병렬 처리(Multiplexing)하므로, 아무리 개수가 많아져도 지연시간 1번분(약 0.2~0.3초) 내외로 즉시 로딩이 완료됩니다.
+			</p>
+		</footer>
+	</main>
+
+	<!-- 홈으로 이동 버튼 (카드 하단 외부 배치) -->
+	<nav class="actions">
+		<a th:href="@{/}" class="link-home">홈으로 돌아가기</a>
+	</nav>
+</div>
+
+</body>
+</html>
