@@ -29,4 +29,15 @@ public class HomeApiController {
 	public ResponseEntity<Map<String, String>> bye() {
 		return ResponseEntity.ok(Map.of("message", "안녕히 가세요"));
 	}
+
+	@Operation(summary = "스레드 정보", description = "현재 스레드 정보를 반환합니다.")
+	@GetMapping("/thread-info")
+	public String getThreadInfo() {
+		Thread currentThread = Thread.currentThread();
+		// 가상 스레드인 경우 true, 일반 플랫폼 스레드인 경우 false 반환
+		boolean isVirtual = currentThread.isVirtual(); 
+		
+		return String.format("Thread Name: %s, Is Virtual: %b", currentThread.toString(), isVirtual);
+	}
 }
+

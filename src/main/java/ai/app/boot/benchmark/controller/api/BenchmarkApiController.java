@@ -55,4 +55,13 @@ public class BenchmarkApiController {
 	public Map<String, String> echoText(@RequestBody Map<String, String> payload) {
 		return payload;
 	}
+
+	@Operation(summary = "순수 대기 API", description = "CPU 연산 없이 설정된 시간만큼 대기 후 응답합니다.")
+	@GetMapping(value = "/pure-delay")
+	public String pureDelay(@RequestParam(value = "delay", defaultValue = "200") int delay) throws Exception {
+		if (delay > 0) {
+			Thread.sleep(delay);
+		}
+		return "ok";
+	}
 }

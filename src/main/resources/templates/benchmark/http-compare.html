@@ -43,6 +43,8 @@
 					<option value="100">100 개 (가벼운 부하)</option>
 					<option value="300" selected>300 개 (보통 부하)</option>
 					<option value="500">500 개 (무거운 부하)</option>
+					<option value="1000">1000 개 (매우 무거운 부하)</option>
+					<option value="10000">10000 개 (극한 부하)</option>
 				</select>
 			</div>
 			<div class="config-item">
@@ -72,13 +74,6 @@
 			</div>
 		</section>
 
-		<!-- 이미지 바둑판 격자 -->
-		<section class="grid-wrapper">
-			<div id="image-grid" class="image-grid">
-				<!-- JS를 사용해 타일 동적 생성 -->
-			</div>
-		</section>
-
 		<!-- 제어 구역 -->
 		<section class="action-section">
 			<button id="start-btn" class="btn btn-primary">
@@ -86,6 +81,13 @@
 				부하 테스트 시작
 			</button>
 			<button id="reset-btn" class="btn btn-secondary">초기화</button>
+		</section>
+
+		<!-- 이미지 바둑판 격자 -->
+		<section class="grid-wrapper">
+			<div id="image-grid" class="image-grid">
+				<!-- JS를 사용해 타일 동적 생성 -->
+			</div>
 		</section>
 
 		<!-- 텍스트 전송 암호화 테스트 폼 (UI/UX 개선) -->
