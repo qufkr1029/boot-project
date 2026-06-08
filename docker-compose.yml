@@ -1,0 +1,18 @@
+services:
+  boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: boot-app:latest
+    container_name: boot-app-container
+    restart: unless-stopped
+    environment:
+      - SERVER_PORT=8080
+      - SERVER_SSL_ENABLED=false
+    networks:
+      - npm_shared_net
+
+networks:
+  npm_shared_net:
+    name: npm-network
+    external: true
