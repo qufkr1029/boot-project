@@ -5,6 +5,7 @@ WORKDIR /home/gradle/project
 # 소스 파일 복사 및 Gradle 빌드 (테스트 생략으로 속도 최적화)
 COPY --chown=gradle:gradle . .
 RUN chmod +x gradlew
+RUN sed -i '/org.gradle.java.home/d' gradle.properties
 RUN ./gradlew bootJar -x test --no-daemon
 
 # Stage 2: Run the application
