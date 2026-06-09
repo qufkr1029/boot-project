@@ -5,7 +5,6 @@ services:
     restart: unless-stopped
     environment:
       - SERVER_PORT=8080
-      - SERVER_SSL_ENABLED=false
     networks:
       - npm_shared_net
 networks:
