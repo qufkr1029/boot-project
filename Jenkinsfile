@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t boot-was .'
+                    sh 'docker build -t boot .'
                 }
             }
         }
