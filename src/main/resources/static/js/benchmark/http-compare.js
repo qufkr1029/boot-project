@@ -150,43 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		finishTest();
 	}
 
-	// 5. 텍스트 전송 암호화 테스트 기능
-	const sendTextBtn = document.getElementById('send-text-btn');
-	const testTextInput = document.getElementById('test-text-input');
-	const testTextResultEl = document.getElementById('test-text-result');
-
-	sendTextBtn.addEventListener('click', () => {
-		const textValue = testTextInput.value;
-		if (!textValue) {
-			alert('보낼 내용을 입력해 주세요!');
-			return;
-		}
-
-		sendTextBtn.disabled = true;
-		testTextResultEl.textContent = '전송 중...';
-
-		fetch('/api/benchmark/echo', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ text: textValue })
-		})
-		.then(res => {
-			if (!res.ok) throw new Error('서버 오류');
-			return res.json();
-		})
-		.then(data => {
-			testTextResultEl.textContent = data.text;
-		})
-		.catch(err => {
-			testTextResultEl.textContent = `실패 (${err.message})`;
-		})
-		.finally(() => {
-			sendTextBtn.disabled = false;
-		});
-	});
-
 	// 이벤트 리스너 등록
 	startBtn.addEventListener('click', startComparisonTest);
 	resetBtn.addEventListener('click', resetTest);

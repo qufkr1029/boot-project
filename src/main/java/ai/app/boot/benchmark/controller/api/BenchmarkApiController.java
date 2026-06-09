@@ -9,8 +9,6 @@ import javax.imageio.ImageIO;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,12 +46,6 @@ public class BenchmarkApiController {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(img, "PNG", baos);
 		return baos.toByteArray();
-	}
-
-	@Operation(summary = "텍스트 에코 API", description = "보내온 텍스트를 그대로 반환하여 전송 테스트를 돕습니다.")
-	@PostMapping(value = "/echo")
-	public Map<String, String> echoText(@RequestBody Map<String, String> payload) {
-		return payload;
 	}
 
 	@Operation(summary = "순수 대기 API", description = "CPU 연산 없이 설정된 시간만큼 대기 후 응답합니다.")
