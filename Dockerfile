@@ -6,7 +6,7 @@ WORKDIR /home/gradle/project
 COPY --chown=gradle:gradle . .
 RUN chmod +x gradlew
 RUN sed -i '/org.gradle.java.home/d' gradle.properties
-RUN gradle bootJar -x test --no-daemon
+RUN ./gradlew bootJar -x test --no-daemon
 
 # Stage 2: Run the application
 FROM eclipse-temurin:25-jre
