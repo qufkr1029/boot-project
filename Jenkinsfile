@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_DIR = '/home/ubuntu/docker/projects/boot'
+        DEPLOY_DIR = '/var/jenkins_home/projects/boot'
     }
 
     stages {
@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Image...'
-                    sh 'docker build -t boot-was:latest .'
+                    sh 'docker build -t boot-was .'
                 }
             }
         }
@@ -25,7 +25,8 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application using Docker Compose...'
-                    // docker-compose.yml 복사
+                    // 배포 디렉토리 생성 및 docker-compose.yml 복사
+                    sh "mkdir -p ${DEPLOY_DIR}"
                     sh "cp docker-compose.yml ${DEPLOY_DIR}/"
                     
                     // 지정 배포 디렉토리로 이동하여 컨테이너 제어

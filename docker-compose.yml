@@ -1,7 +1,7 @@
 services:
-  was:
-    image: boot-was:latest
-    container_name: boot-was-container
+  boot-was:
+    image: boot-was
+    container_name: boot-was
     restart: unless-stopped
     environment:
       - SERVER_PORT=8080
