@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const switchHttp2 = document.getElementById('switch-http2');
 
 	const isHttps = window.location.protocol === 'https:';
-	const currentPort = window.location.port;
 
 	// 현재 접속 프로토콜 기반 액티브 탭 색칠
 	if (isHttps) {
@@ -26,13 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	// 각 스위치 클릭 이벤트 바인딩
 	switchHttp1.addEventListener('click', () => {
 		if (window.location.protocol === 'https:') {
-			window.location.href = `http://${window.location.hostname}/benchmark/http-compare`;
+			window.location.href = 'http:' + window.location.href.substring(window.location.protocol.length);
 		}
 	});
 
 	switchHttp2.addEventListener('click', () => {
-		if (window.location.protocol !== 'https:') {
-			window.location.href = `https://${window.location.hostname}/benchmark/http-compare`;
+		if (window.location.protocol === 'http:') {
+			window.location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
 		}
 	});
 

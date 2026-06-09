@@ -26,11 +26,11 @@
 			<div class="segmented-control">
 				<button id="switch-http1" class="switch-btn">
 					<span class="switch-icon">🌐</span>
-					<span class="switch-label">HTTP/1.1 (8888 포트)</span>
+					<span class="switch-label">HTTP/1.1</span>
 				</button>
 				<button id="switch-http2" class="switch-btn">
 					<span class="switch-icon">⚡</span>
-					<span class="switch-label">HTTP/2 (8443 포트)</span>
+					<span class="switch-label">HTTP/2</span>
 				</button>
 			</div>
 		</section>
@@ -44,7 +44,6 @@
 					<option value="300" selected>300 개 (보통 부하)</option>
 					<option value="500">500 개 (무거운 부하)</option>
 					<option value="1000">1000 개 (매우 무거운 부하)</option>
-					<option value="10000">10000 개 (극한 부하)</option>
 				</select>
 			</div>
 			<div class="config-item">
@@ -113,10 +112,10 @@
 				💡 격차가 왜 생기나요?
 			</div>
 			<p>
-				<strong>HTTP/1.1 (8888 포트)</strong>는 파일 300개를 가져올 때 한 번에 6개씩밖에 계산하지 못합니다. 지연이 200ms라면 총 소요 시간은 약 10초(300 / 6 * 0.2초) 가까이 누적되며 극심한 렉이 발생합니다.
+				<strong>HTTP/1.1</strong>는 파일 300개를 가져올 때 한 번에 6개씩밖에 계산하지 못합니다. 지연이 200ms라면 총 소요 시간은 약 10초(300 / 6 * 0.2초) 가까이 누적되며 극심한 렉이 발생합니다.
 			</p>
 			<p>
-				반면 <strong>HTTP/2 (8443 포트)</strong>는 300개의 파일을 1개의 통로로 동시에 병렬 처리(Multiplexing)하므로, 아무리 개수가 많아져도 지연시간 1번분(약 0.2~0.3초) 내외로 즉시 로딩이 완료됩니다.
+				반면 <strong>HTTP/2</strong>는 300개의 파일을 1개의 통로로 동시에 병렬 처리(Multiplexing)하므로, 아무리 개수가 많아져도 지연시간 1번분(약 0.2~0.3초) 내외로 즉시 로딩이 완료됩니다.
 			</p>
 		</footer>
 	</main>
