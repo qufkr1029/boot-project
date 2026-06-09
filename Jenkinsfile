@@ -25,14 +25,21 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying application using Docker Compose...'
-                    // 배포 디렉토리 생성 및 docker-compose.yml 복사
+                    // 1. 배포 디렉토리 생성
                     sh "mkdir -p ${DEPLOY_DIR}"
-                    sh "cp docker-compose.yml ${DEPLOY_DIR}/"
                     
-                    // 지정 배포 디렉토리로 이동하여 컨테이너 제어
+                    // 2. 기존에 존재하던 설정 파일로 컨테이너를 먼저 종료
                     sh """
                         cd ${DEPLOY_DIR}
                         docker compose down || true
+                    """
+                    
+                    // 3. 새 설정 파일 복사 (덮어쓰기)
+                    sh "cp docker-compose.yml ${DEPLOY_DIR}/"
+                    
+                    // 4. 새 설정 파일 기준으로 컨테이너 실행
+                    sh """
+                        cd ${DEPLOY_DIR}
                         docker compose up -d
                     """
                 }
