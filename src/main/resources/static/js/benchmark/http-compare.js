@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const isHttps = window.location.protocol === 'https:';
 	const currentPort = window.location.port;
 
-	// 현재 접속 프로토콜 및 포트 기반 액티브 탭 색칠
-	if (isHttps || currentPort === '8443') {
+	// 현재 접속 프로토콜 기반 액티브 탭 색칠
+	if (isHttps) {
 		switchHttp2.classList.add('active');
 	} else {
 		switchHttp1.classList.add('active');
@@ -25,14 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// 각 스위치 클릭 이벤트 바인딩
 	switchHttp1.addEventListener('click', () => {
-		if (window.location.protocol === 'https:' || window.location.port !== '8888') {
-			window.location.href = `http://${window.location.hostname}:8888/benchmark/http-compare`;
+		if (window.location.protocol === 'https:') {
+			window.location.href = `http://${window.location.hostname}/benchmark/http-compare`;
 		}
 	});
 
 	switchHttp2.addEventListener('click', () => {
-		if (window.location.protocol !== 'https:' || window.location.port !== '8443') {
-			window.location.href = `https://${window.location.hostname}:8443/benchmark/http-compare`;
+		if (window.location.protocol !== 'https:') {
+			window.location.href = `https://${window.location.hostname}/benchmark/http-compare`;
 		}
 	});
 
