@@ -8,7 +8,7 @@ pipeline {
                 [key: 'ref', value: '$.ref']
             ],
             // Jenkins Credential ID를 참조하여 보안 토큰 매칭
-            tokenCredentialId: 'boot-project-webhook-token-id',
+            tokenCredentialId: 'boot-webhook-token',
 
             causeString: 'Triggered by GitHub push to $ref',
 
