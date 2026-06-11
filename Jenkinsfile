@@ -1,6 +1,26 @@
 pipeline {
     agent any
 
+    triggers {
+        GenericTrigger(
+            genericVariables: [
+                // GitHub 웹훅 Payload에서 브랜치 정보(ref) 추출
+                [key: 'ref', value: '$.ref']
+            ],
+            // Jenkins Credential ID를 참조하여 보안 토큰 매칭
+            tokenCredentialId: 'boot-project-webhook-token-id',
+
+            causeString: 'Triggered by GitHub push to $ref',
+
+            // 필터 설정: main 브랜치에 푸시되었을 때만 빌드 실행
+            regexpFilterText: '$ref',
+            regexpFilterExpression: 'refs/heads/main',
+
+            printContributedVariables: true,
+            printPostContent: true
+        )
+    }
+
     environment {
         DEPLOY_DIR = '/var/jenkins_home/projects/boot'
     }
