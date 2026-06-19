@@ -22,7 +22,7 @@ pipeline {
     }
 
     environment {
-        DEPLOY_DIR = '/var/jenkins_home/projects/boot'
+        DEPLOY_DIR = '/home/ubuntu/docker/projects/boot'
     }
 
     stages {
