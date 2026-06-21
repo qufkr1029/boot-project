@@ -433,6 +433,6 @@ body.bg-3d-active .status-on {
     border-color: rgba(34, 197, 94, 0.1);
 }
 
-dp-none {
+.dp-none {
     display: none !important;
 }
