@@ -32,6 +32,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	// WebSocket: 양방향 실시간 통신을 위한 스타터
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	// JPA + PostgreSQL
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'org.postgresql:postgresql'
+	// Querydsl (Jakarta EE 대응)
+	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
 	// Swagger (OpenAPI) UI
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
 	// Lombok: 컴파일 시점에 getter/setter/builder 등 보일러플레이트 생성(런타임 JAR 미포함)
