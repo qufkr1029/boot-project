@@ -69,8 +69,9 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    echo 'Cleaning up unused Docker images...'
-                    sh 'docker image prune -f'
+                    echo 'Cleaning up unused Docker images (older than 7 days)...'
+                    // 7일 이상 지난 dangling 이미지만 삭제 → 최근 빌드 캐시는 유지
+                    sh 'docker image prune -f --filter "until=168h"'
                 }
             }
         }
