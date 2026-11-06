@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM gradle:jdk25 AS build
+FROM gradle:9.8-jdk25-alpine AS build
 WORKDIR /home/gradle/project
 
 # 소스 파일 복사 및 Gradle 빌드 (테스트 생략으로 속도 최적화)
@@ -9,7 +9,7 @@ RUN sed -i '/org.gradle.java.home/d' gradle.properties
 RUN ./gradlew bootJar -x test --no-daemon
 
 # Stage 2: Run the application
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 # 빌드 산출물 jar만 런타임 이미지로 복사
